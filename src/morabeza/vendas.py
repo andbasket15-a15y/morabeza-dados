@@ -33,7 +33,7 @@ class Venda:
     def total(self) -> int:
         """Valor da venda em escudos."""
         # TODO 1: devolve a quantidade vezes o preço unitário (usa self.).
-        raise NotImplementedError("Venda.total ainda não está feita")
+        return self.quantidade * self.preco_unitario
 
 
 def criar_venda(linha: dict[str, str]) -> Venda:
@@ -41,10 +41,29 @@ def criar_venda(linha: dict[str, str]) -> Venda:
     # TODO 2: dentro de um try, converte quantidade e preco_unitario com int()
     #         e a data com date.fromisoformat(). Se der ValueError, levanta
     #         VendaInvalida (raise VendaInvalida("...") from erro).
+    try:
+        quantidade = int(linha["quantidade"])
+        preco_unitario = int(linha["preco_unitario"])
+        data = date.fromisoformat(linha["data"])
+    except ValueError as erro:
+        raise VendaInvalida(f"{linha['venda_id']}: valor impossível") from erro
+
     # TODO 3: levanta VendaInvalida se a quantidade ou o preço não forem > 0,
     #         ou se linha["ilha"] não estiver em ILHAS_SERVIDAS.
+    if quantidade <= 0 or preco_unitario <= 0:
+        raise VendaInvalida(f"{linha['venda_id']}: Quantidade e preço unitário têm que ser positivos.")
+    if linha["ilha"] not in ILHAS_SERVIDAS:
+        raise VendaInvalida(f"{linha['venda_id']}: A Morabeza não serve a ilha {linha['ilha']}.")
     # TODO 4: devolve Venda(...) com os valores já convertidos.
-    raise NotImplementedError("criar_venda ainda não está feita")
+    return Venda(
+        venda_id=linha["venda_id"],
+        data=data,
+        cliente_id=linha["cliente_id"],
+        ilha=linha["ilha"],
+        categoria=linha["categoria"],
+        quantidade=quantidade,
+        preco_unitario=preco_unitario,
+    )
 
 
 def ler_vendas(caminho: str) -> Iterator[Venda]:
@@ -52,20 +71,32 @@ def ler_vendas(caminho: str) -> Iterator[Venda]:
     # TODO 5: abre o ficheiro e percorre csv.DictReader. Para cada linha,
     #         tenta yield criar_venda(linha); se der VendaInvalida, continue.
     #         Repara: é um gerador, por isso usa yield e não return.
-    raise NotImplementedError("ler_vendas ainda não está feita")
+    with open(caminho, encoding="utf-8") as ficheiro:
+        for linha in csv.DictReader(ficheiro):
+            try:
+                yield criar_venda(linha)
+            except VendaInvalida:
+                continue    
 
 
 def contar_invalidas(caminho: str) -> int:
     """Número de linhas do ficheiro que não dão uma Venda válida."""
     # TODO 6: igual a ler_vendas, mas em vez de devolver vendas conta quantas
     #         linhas levantam VendaInvalida e devolve esse número.
-    raise NotImplementedError("contar_invalidas ainda não está feita")
+    invalidos = 0
+    with open(caminho, encoding="utf-8") as ficheiro:
+        for linha in csv.DictReader(ficheiro):
+            try:
+                criar_venda(linha)
+            except VendaInvalida:
+                invalidos += 1
+    return invalidos
 
 
 def vendas_acima(vendas: Iterable[Venda], limite: int) -> list[Venda]:
     """Vendas com total maior do que o limite, numa compreensão de lista."""
     # TODO 7: uma só linha com uma compreensão de lista: [v for v in ... if ...]
-    raise NotImplementedError("vendas_acima ainda não está feita")
+    return [v for v in vendas if v.total > limite]
 
 
 def total_por(vendas: Iterable[Venda], chave: Callable[[Venda], str]) -> dict[str, int]:
@@ -73,7 +104,12 @@ def total_por(vendas: Iterable[Venda], chave: Callable[[Venda], str]) -> dict[st
     # TODO 8: igual a faturacao_por_ilha da Sessão 1, mas a chave do dicionário
     #         é chave(v) em vez de v["ilha"]. Assim a mesma função serve para
     #         agrupar por ilha, por categoria ou por mês.
-    raise NotImplementedError("total_por ainda não está feita")
+    por_chave = {}
+    for venda in vendas:
+        k = chave(venda)
+        por_chave[k] = por_chave.get(k, 0) + venda.total
+    return por_chave
+
 
 
 # ---------------------------------------------------------------- Extensão (opcional)
@@ -81,7 +117,7 @@ def total_por(vendas: Iterable[Venda], chave: Callable[[Venda], str]) -> dict[st
 def top_n(totais: dict[str, int], n: int) -> list[tuple[str, int]]:
     """Os n pares (chave, total) com maior total, do maior para o menor."""
     # EXTENSÃO: sorted(totais.items(), key=lambda par: ..., reverse=True) e depois [:n]
-    raise NotImplementedError("Extensão por fazer")
+    return sorted(totais.items(), key=lambda par: par[1], reverse=True)[:n]
 
 
 @contextmanager
@@ -89,5 +125,10 @@ def cronometro(nome: str):
     """Mede o tempo de um bloco. Uso: with cronometro("leitura"): ..."""
     # EXTENSÃO: guarda time.perf_counter() antes do yield e, num finally,
     #           imprime f"{nome}: {segundos:.3f} s".
-    raise NotImplementedError("Extensão por fazer")
-    yield
+    inicio = time.perf_counter()
+    try:
+        yield
+    finally:
+        fim = time.perf_counter()
+        segundos = fim - inicio
+        print(f"{nome}: {segundos:.3f} s")
