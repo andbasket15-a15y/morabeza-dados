@@ -104,11 +104,11 @@ def total_por(vendas: Iterable[Venda], chave: Callable[[Venda], str]) -> dict[st
     # TODO 8: igual a faturacao_por_ilha da Sessão 1, mas a chave do dicionário
     #         é chave(v) em vez de v["ilha"]. Assim a mesma função serve para
     #         agrupar por ilha, por categoria ou por mês.
-    por_chave = {}
-    for venda in vendas:
-        k = chave(venda)
-        por_chave[k] = por_chave.get(k, 0) + venda.total
-    return por_chave
+    totais: dict[str, int] = {}
+    for v in vendas:
+        k = chave(v)
+        totais[k] = totais.get(k, 0) + v.total
+    return totais
 
 
 
