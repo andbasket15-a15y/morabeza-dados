@@ -9,6 +9,9 @@ description = "Projeto de dados da Morabeza Distribuição (módulo Engenharia d
 requires-python = ">=3.10"
 dependencies = []
 
+[project.scripts]
+morabeza = "morabeza.cli:main"
+
 [project.optional-dependencies]
 # Ferramentas de desenvolvimento (a partir da Sessão 1)
 dev = ["pytest>=8", "ruff>=0.6"]
@@ -22,9 +25,6 @@ ml = ["scikit-learn>=1.5", "matplotlib>=3.8"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-
-[project.scripts]
-morabeza = "morabeza.cli:main"
 
 [tool.ruff]
 line-length = 100
