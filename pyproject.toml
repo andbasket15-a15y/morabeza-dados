@@ -23,5 +23,8 @@ ml = ["scikit-learn>=1.5", "matplotlib>=3.8"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+[project.scripts]
+morabeza = "morabeza.cli:main"
+
 [tool.ruff]
 line-length = 100
