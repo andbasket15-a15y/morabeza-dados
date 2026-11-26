@@ -37,3 +37,4 @@ python -m morabeza.resumo data/vendas_amostra.csv
 ## Repositório do formando
 Anderson Alves Mestre
 Ilha atual: São Vicente em Mindelo
+Nacionalidade: Caboverdiana e Angolana
