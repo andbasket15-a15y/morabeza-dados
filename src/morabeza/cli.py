@@ -6,7 +6,7 @@ import argparse
 import logging
 import sys
 
-from morabeza.apoio import faturacao_por_ilha, ler_vendas, total_venda
+from morabeza.apoio import faturacao_por_ilha, ler_vendas
 from morabeza.config import carregar_config
 
 logger = logging.getLogger(__name__)
@@ -34,12 +34,13 @@ def main(argv: list[str] | None = None) -> int:
     #         Se a ilha não existir, logger.error(...) e devolve 1. No fim, devolve 0.
     por_ilhas = faturacao_por_ilha(vendas)
     moeda = config["moeda"]
-    if args.ilha in None:
+    if args.ilha is None:
         print(f"Faturação total: {sum(por_ilhas.values())} {moeda}")
         return 0
-    else:
+    if args.ilha not in por_ilhas:
         logger.error("Ilha desconhecida: %s", args.ilha)
-        print(f"Faturação em {args.ilha}: {por_ilhas[args.ilha]} {moeda}")
+        return 1
+    print(f"Faturação em {args.ilha}: {por_ilhas[args.ilha]} {moeda}")
     return 0
 
 
