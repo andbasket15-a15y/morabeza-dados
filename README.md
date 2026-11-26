@@ -36,3 +36,4 @@ python -m morabeza.resumo data/vendas_amostra.csv
 
 ## Usuário do Repositório
 Anderson Alves Mestre
+Ilha atual: São Vicente em Mindelo
