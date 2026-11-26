@@ -36,5 +36,5 @@ python -m morabeza.resumo data/vendas_amostra.csv
 
 ## Repositório do formando
 Anderson Alves Mestre
-Ilha principal: Santiago
+Ilha principal: São Vicente
 Nacionalidade: Caboverdiana e Angolana
