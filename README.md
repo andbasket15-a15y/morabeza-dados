@@ -36,4 +36,4 @@ python -m morabeza.resumo data/vendas_amostra.csv
 
 ## Repositório do formando
 Anderson Alves Mestre
-Ilha principal: São Vicente
+Ilha principal: São Vicente, cidade Mindelo
